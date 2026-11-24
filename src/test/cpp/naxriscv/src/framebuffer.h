@@ -2,11 +2,14 @@
 //
 // SPDX-License-Identifier: MIT
 
-#include <SDL2/SDL.h>
 #include <assert.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <cstring>
+#include <iostream>
 
+#ifdef USE_SDL
+#include <SDL2/SDL.h>
 
 class Framebuffer : public SimElement{
 public:
@@ -84,3 +87,17 @@ public:
 
     }
 };
+#else
+class Framebuffer : public SimElement{
+public:
+    int width, height;
+    uint32_t *pixels;
+    Framebuffer(int width, int height) : width(width), height(height), pixels(nullptr) {
+        std::cout << "[Framebuffer] SDL2 disabled - running headless." << std::endl;
+    }
+    virtual ~Framebuffer() {}
+    virtual void postCycle() {}
+    virtual void preCycle() {}
+};
+#endif
+
